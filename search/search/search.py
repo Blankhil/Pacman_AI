@@ -133,18 +133,27 @@ def uniformCostSearch(problem):
     from util import PriorityQueue
     ucs_prio_q = PriorityQueue()
     visited = []
-    ucs_prio_q.push((problem.getStartState(), []), 0) #push priority and ucs
+    pri = 0
+    ucs_prio_q.push((problem.getStartState(), []), pri) #push priority and ucs
+    dict = {problem.getStartState() : 0}
     while not ucs_prio_q.isEmpty():
         xy, directions = ucs_prio_q.pop()
         if problem.isGoalState(xy):
             return directions
         if xy not in visited:
             visited.append(xy)
-            #if problem.isGoalState(xy):
-             #   return directions
             for xy_new, direction, prio in problem.getSuccessors(xy):
-                if xy_new not in visited:
-                    ucs_prio_q.push((xy_new, directions + [direction]),  prio) 
+                value = dict.get(xy_new)
+                if value is not None: 
+                    if (dict[xy] + prio) < value:
+                        ucs_prio_q.push((xy_new, directions + [direction]), dict[xy] + prio)
+                        dict[xy_new] = dict[xy] + prio
+                        continue
+                    else:
+                        continue
+                else:
+                    ucs_prio_q.push((xy_new, directions + [direction]), dict[xy] + prio) 
+                    dict[xy_new] = dict[xy] + prio
 
 def nullHeuristic(state, problem=None):
     """
