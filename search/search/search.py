@@ -136,11 +136,13 @@ def uniformCostSearch(problem):
     ucs_prio_q.push((problem.getStartState(), []), 0) #push priority and ucs
     while not ucs_prio_q.isEmpty():
         xy, directions, prio = bfs_queue.pop()
-        if problem.isGoalState(xy):
-            return directions
-        visited.append(xy)
         if xy not in visited:
             visited.append(xy)
+            if problem.isGoalState(xy):
+                return directions
+            for xy_new, direction, prio in problem.getSuccessors(xy):
+                if xy_new not in visited:
+                    ucs_prio_q.push((xy_new, directions + [direction]), xy_new[2] + prio) 
             
 
     util.raiseNotDefined()
