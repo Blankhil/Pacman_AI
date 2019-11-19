@@ -146,7 +146,7 @@ def uniformCostSearch(problem):
                 value = dict.get(xy_new)
                 if value is not None: 
                     if (dict[xy] + prio) < value:
-                        ucs_prio_q.push((xy_new, directions + [direction]), dict[xy] + prio)
+                        ucs_prio_q.update((xy_new, directions + [direction]), dict[xy] + prio)
                         dict[xy_new] = dict[xy] + prio
                         continue
                     else:
