@@ -348,6 +348,9 @@ class CornersProblem(search.SearchProblem):
         return len(actions)
 
 
+def manhattan_distance(a, b):
+    return sum(abs(i - j) for i, j, in zip (a,b))
+
 def cornersHeuristic(state, problem):
     """
     A heuristic for the CornersProblem that you defined.
@@ -363,7 +366,7 @@ def cornersHeuristic(state, problem):
     """
     corners = problem.corners # These are the corner coordinates
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
-        
+    
     if not state[1]:
         return 0 # Default to trivial solution
     return max(manhattan_distance(corner, state[0]) for corner in state[1])
