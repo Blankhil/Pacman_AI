@@ -255,6 +255,17 @@ def manhattanHeuristic(position, problem, info={}):
     xy1 = position
     xy2 = problem.goal
     return abs(xy1[0] - xy2[0]) + abs(xy1[1] - xy2[1])
+    
+def manhattanSumHeuristic(source, sink):
+    costSum = 0
+    for a,b, in zip(source,sink):
+        costSum = costSum + abs(a-b)
+    return costSum
+
+def manhattanFoodHeuristic(start, goal, problem):
+    createdGoal = PositionSearchProblem(problem.startingGameState, start = start, goal = goal, warn = False)
+    return len(search.astar(createdGoal, heuristic = manhattanHeuristic))
+
 
 def euclideanHeuristic(position, problem, info={}):
     "The Euclidean distance heuristic for a PositionSearchProblem"
@@ -347,10 +358,6 @@ class CornersProblem(search.SearchProblem):
             if self.walls[x][y]: return 999999
         return len(actions)
 
-
-def manhattan_distance(a, b):
-    return sum(abs(i - j) for i, j, in zip (a,b))
-
 def cornersHeuristic(state, problem):
     """
     A heuristic for the CornersProblem that you defined.
@@ -369,7 +376,7 @@ def cornersHeuristic(state, problem):
     
     if not state[1]:
         return 0 # Default to trivial solution
-    return max(manhattan_distance(corner, state[0]) for corner in state[1])
+    return max(manhattanSumHeuristic(corner, state[0]) for corner in state[1])
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
@@ -462,8 +469,11 @@ def foodHeuristic(state, problem):
     problem.heuristicInfo['wallCount']
     """
     position, foodGrid = state
-    "*** YOUR CODE HERE ***"
-    return 0
+    lst = foodGrid.asList()
+    if not lst:
+        return 0
+
+    return max(manhattanFoodHeuristic(position, i, problem) for i in lst)
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
